@@ -54,7 +54,7 @@ def load_regression_model(path):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Run VisionBridge AI prediction pipeline."
+        description="Run AI prediction pipeline."
     )
 
     parser.add_argument(
@@ -65,9 +65,27 @@ def main():
 
     args = parser.parse_args()
 
-    # Parse JSON
+        # Parse JSON
+    record_text = args.record.strip()
+
+    # Remove surrounding single quotes if PowerShell passes them through.
+    if (
+        len(record_text) >= 2
+        and record_text.startswith("'")
+        and record_text.endswith("'")
+    ):
+        record_text = record_text[1:-1]
+
+    # If PowerShell removed the JSON double quotes, restore them
+    # around the known feature names.
+    for name in FEATURE_NAMES:
+        record_text = record_text.replace(
+            f"{name}:",
+            f'"{name}":',
+        )
+
     try:
-        record = json.loads(args.record)
+        record = json.loads(record_text)
     except json.JSONDecodeError as exc:
         error(f"Invalid JSON: {exc}")
 
@@ -104,8 +122,8 @@ def main():
     regression_model = load_regression_model(regression_path)
 
     weights = np.array(
-    regression_model["weights"],
-    dtype=float,
+        regression_model["weights"],
+        dtype=float,
     ).reshape(-1)
 
     scaler_mean = np.array(
@@ -130,8 +148,9 @@ def main():
     )
 
     regression_prediction = float(
-    (X_with_bias @ weights).item()
+        (X_with_bias @ weights).item()
     )
+
     # ---------------------------------------------------------
     # Classification
     # ---------------------------------------------------------

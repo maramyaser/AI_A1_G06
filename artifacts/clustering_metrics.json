@@ -1,0 +1,27 @@
+{
+    "method": "KMeans",
+    "random_seed": 3513,
+    "features_used": [
+        "plot_area_ha",
+        "rainfall_mm",
+        "soil_ph",
+        "seed_kg",
+        "distance_km",
+        "arrival_hour"
+    ],
+    "k_values_tested": [
+        2,
+        3,
+        4,
+        5
+    ],
+    "silhouette_scores": {
+        "2": 0.22448223794610336,
+        "3": 0.17319206632208686,
+        "4": 0.16247877246829376,
+        "5": 0.17333505759214535
+    },
+    "selected_k": 2,
+    "selected_silhouette_score": 0.22448223794610336,
+    "interpretation_note": "Clusters represent groups of records with similar input-feature profiles. They are not verified real-world categories."
+}

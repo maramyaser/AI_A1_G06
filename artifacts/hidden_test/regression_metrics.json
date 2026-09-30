@@ -1,0 +1,9 @@
+{
+    "model": "Linear Regression with Batch Gradient Descent",
+    "random_seed": 3513,
+    "training_rows": 16,
+    "testing_rows": 4,
+    "mae": 123.18986203303146,
+    "rmse": 155.61691829541334,
+    "r2": 0.584195791408706
+}

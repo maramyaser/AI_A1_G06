@@ -1,0 +1,22 @@
+{
+    "model": "Logistic Regression",
+    "random_seed": 3513,
+    "training_rows": 16,
+    "testing_rows": 4,
+    "accuracy": 0.75,
+    "precision": 0.5,
+    "recall": 1.0,
+    "f1": 0.6666666666666666,
+    "confusion_matrix": [
+        [
+            2,
+            1
+        ],
+        [
+            0,
+            1
+        ]
+    ],
+    "class_weight": "balanced",
+    "costly_error": "False negatives: records requiring dispatch attention that were predicted as not requiring attention."
+}

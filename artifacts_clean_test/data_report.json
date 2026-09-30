@@ -1,0 +1,102 @@
+{
+    "group_code": "AI_A1_G06",
+    "row_count": 300,
+    "feature_count": 6,
+    "columns": [
+        "record_id",
+        "plot_area_ha",
+        "rainfall_mm",
+        "soil_ph",
+        "seed_kg",
+        "distance_km",
+        "arrival_hour",
+        "actual_yield_kg",
+        "dispatch_attention"
+    ],
+    "missing_values": {
+        "record_id": 0,
+        "plot_area_ha": 0,
+        "rainfall_mm": 0,
+        "soil_ph": 0,
+        "seed_kg": 0,
+        "distance_km": 0,
+        "arrival_hour": 0,
+        "actual_yield_kg": 0,
+        "dispatch_attention": 0
+    },
+    "duplicate_record_ids": 0,
+    "duplicate_rows": 0,
+    "sha256": "e011d244db231d7b1f162e7aadcf66f5b72adf70484129e75bbd17854587b099",
+    "descriptive_statistics": {
+        "plot_area_ha": {
+            "count": 300.0,
+            "mean": 2.1454,
+            "std": 1.0573,
+            "min": 0.32,
+            "25%": 1.2975,
+            "50%": 2.115,
+            "75%": 3.025,
+            "max": 3.99
+        },
+        "rainfall_mm": {
+            "count": 300.0,
+            "mean": 89.168,
+            "std": 29.2313,
+            "min": 25.0,
+            "25%": 69.875,
+            "50%": 87.05,
+            "75%": 108.775,
+            "max": 172.0
+        },
+        "soil_ph": {
+            "count": 300.0,
+            "mean": 5.8221,
+            "std": 0.4284,
+            "min": 4.69,
+            "25%": 5.5375,
+            "50%": 5.82,
+            "75%": 6.11,
+            "max": 7.01
+        },
+        "seed_kg": {
+            "count": 300.0,
+            "mean": 342.217,
+            "std": 172.4689,
+            "min": 40.0,
+            "25%": 204.375,
+            "50%": 335.1,
+            "75%": 473.0,
+            "max": 776.4
+        },
+        "distance_km": {
+            "count": 300.0,
+            "mean": 15.1637,
+            "std": 8.2574,
+            "min": 1.2,
+            "25%": 8.375,
+            "50%": 15.05,
+            "75%": 22.125,
+            "max": 30.0
+        },
+        "arrival_hour": {
+            "count": 300.0,
+            "mean": 11.2367,
+            "std": 3.5007,
+            "min": 6.0,
+            "25%": 8.0,
+            "50%": 11.0,
+            "75%": 14.0,
+            "max": 17.0
+        },
+        "actual_yield_kg": {
+            "count": 300.0,
+            "mean": 897.9553,
+            "std": 407.088,
+            "min": 83.7,
+            "25%": 565.7,
+            "50%": 879.85,
+            "75%": 1228.475,
+            "max": 1812.9
+        }
+    }
+}

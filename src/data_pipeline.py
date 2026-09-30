@@ -226,6 +226,8 @@ def run_data_pipeline(data_path, output_dir, group_code):
         json.dump(report, file, indent=4)
 
     print(f"Data report saved to: {report_path}")
+    print(f"Group code: {group_code}")
+    print(f"SHA-256: {calculate_sha256(data_path)}")
 
     # ---------------------------------------------------------
     # 9. Return data for later stages

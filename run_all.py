@@ -1,9 +1,11 @@
 import argparse
 
 from src.data_pipeline import run_data_pipeline
+from src.regression import run_regression
 
 
 def main():
+
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -26,13 +28,33 @@ def main():
 
     args = parser.parse_args()
 
-    run_data_pipeline(
+    # =========================================================
+    # STAGE 1 — DATA PIPELINE
+    # =========================================================
+
+    (
+        df,
+        X,
+        y_regression,
+        y_classification,
+    ) = run_data_pipeline(
         data_path=args.data,
         output_dir=args.output,
         group_code=args.group,
     )
 
-    print("\nStage 1 completed successfully.")
+    # =========================================================
+    # STAGE 2 — REGRESSION
+    # =========================================================
+
+    run_regression(
+        X=X,
+        y=y_regression,
+        output_dir=args.output,
+        random_seed=3513,
+    )
+
+    print("\nStage 1 and Stage 2 completed successfully.")
 
 
 if __name__ == "__main__":

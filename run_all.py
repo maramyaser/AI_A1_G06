@@ -44,27 +44,29 @@ def main():
 
     # STAGE 2
     run_regression(
-        X=X,
-        y=y_regression,
-        output_dir=args.output,
-        random_seed=3513,
+    X=X,
+    y=y_regression,
+    output_dir=args.output,
+    random_seed=3513,
+    models_dir="models",
     )
 
     # STAGE 3
     run_classification(
-        X=X,
-        y=y_classification,
-        output_dir=args.output,
-        random_seed=3513,
-    )
-
+    X=X,
+    y=y_classification,
+    output_dir=args.output,
+    random_seed=3513,
+    models_dir="models",
+)
     # STAGE 4
     run_clustering(
-        df=df,
-        X=X,
-        output_dir=args.output,
-        random_seed=3513,
-    )
+    df=df,
+    X=X,
+    output_dir=args.output,
+    random_seed=3513,
+    models_dir="models",
+)     
 
     print(
         "\nStage 1, Stage 2, Stage 3, and Stage 4 "

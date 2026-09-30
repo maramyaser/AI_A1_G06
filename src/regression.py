@@ -5,11 +5,33 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def train_test_split_numpy(X, y, test_size=0.2, random_seed=3513):
-    """
-    Split X and y into training and testing sets.
-    """
+class StandardScalerManual:
+    def __init__(self):
+        self.mean_ = None
+        self.scale_ = None
 
+    def fit(self, X):
+        self.mean_ = np.mean(X, axis=0)
+        self.scale_ = np.std(X, axis=0)
+
+        # Prevent division by zero
+        self.scale_[self.scale_ == 0] = 1.0
+
+        return self
+
+    def transform(self, X):
+        return (X - self.mean_) / self.scale_
+
+    def fit_transform(self, X):
+        return self.fit(X).transform(X)
+
+
+def train_test_split_manual(
+    X,
+    y,
+    test_size=0.2,
+    random_seed=3513,
+):
     rng = np.random.default_rng(random_seed)
 
     indices = np.arange(len(X))
@@ -20,111 +42,75 @@ def train_test_split_numpy(X, y, test_size=0.2, random_seed=3513):
     test_indices = indices[:test_count]
     train_indices = indices[test_count:]
 
-    X_train = X[train_indices]
-    X_test = X[test_indices]
-
-    y_train = y[train_indices]
-    y_test = y[test_indices]
-
-    return X_train, X_test, y_train, y_test
-
-
-def fit_standard_scaler(X_train):
-    """
-    Calculate scaling parameters using training data only.
-    """
-
-    mean = np.mean(X_train, axis=0)
-    std = np.std(X_train, axis=0)
-
-    # Prevent division by zero
-    std[std == 0] = 1.0
-
-    return mean, std
-
-
-def transform_standard_scaler(X, mean, std):
-    """
-    Standardize data using previously calculated training parameters.
-    """
-
-    return (X - mean) / std
-
-
-def add_bias_column(X):
-    """
-    Add a column of ones for the intercept/bias.
-    """
-
-    return np.column_stack(
-        [np.ones(X.shape[0]), X]
+    return (
+        X[train_indices],
+        X[test_indices],
+        y[train_indices],
+        y[test_indices],
     )
 
 
-def compute_predictions(X, weights):
-    """
-    Calculate predictions for linear regression.
-    """
-
-    return X @ weights
-
-
-def compute_mse(y_true, y_pred):
-    """
-    Mean Squared Error.
-    """
-
-    return np.mean((y_true - y_pred) ** 2)
+def add_bias(X):
+    return np.column_stack(
+        [
+            np.ones(X.shape[0]),
+            X,
+        ]
+    )
 
 
-def batch_gradient_descent(
+def mean_squared_error(y_true, y_pred):
+    return np.mean(
+        (y_true - y_pred) ** 2
+    )
+
+
+def train_gradient_descent(
     X,
     y,
     learning_rate=0.01,
     epochs=5000,
 ):
-    """
-    Train linear regression using batch gradient descent.
-
-    The entire training dataset is used for every gradient update.
-    """
-
-    weights = np.zeros(X.shape[1], dtype=float)
+    weights = np.zeros(X.shape[1])
 
     loss_history = []
 
-    n_samples = X.shape[0]
+    for _ in range(epochs):
 
-    for epoch in range(epochs):
+        predictions = X @ weights
 
-        predictions = compute_predictions(X, weights)
+        error = predictions - y
 
-        errors = predictions - y
+        gradient = (
+            2
+            / len(X)
+            * X.T
+            @ error
+        )
 
-        gradient = (2 / n_samples) * (X.T @ errors)
+        weights -= learning_rate * gradient
 
-        weights = weights - learning_rate * gradient
-
-        loss = compute_mse(y, predictions)
+        loss = mean_squared_error(
+            y,
+            predictions,
+        )
 
         loss_history.append(loss)
 
     return weights, loss_history
 
 
-def calculate_mae(y_true, y_pred):
-    return float(
-        np.mean(np.abs(y_true - y_pred))
+def calculate_metrics(y_true, y_pred):
+
+    mae = np.mean(
+        np.abs(y_true - y_pred)
     )
 
-
-def calculate_rmse(y_true, y_pred):
-    return float(
-        np.sqrt(np.mean((y_true - y_pred) ** 2))
+    rmse = np.sqrt(
+        np.mean(
+            (y_true - y_pred) ** 2
+        )
     )
-
-
-def calculate_r2(y_true, y_pred):
 
     ss_res = np.sum(
         (y_true - y_pred) ** 2
@@ -134,35 +120,9 @@ def calculate_r2(y_true, y_pred):
         (y_true - np.mean(y_true)) ** 2
     )
 
-    if ss_tot == 0:
-        return 0.0
+    r2 = 1 - (ss_res / ss_tot)
 
-    return float(
-        1 - (ss_res / ss_tot)
-    )
-
-
-def save_loss_plot(loss_history, output_path):
-
-    plt.figure(figsize=(8, 5))
-
-    plt.plot(
-        range(1, len(loss_history) + 1),
-        loss_history,
-    )
-
-    plt.xlabel("Epoch")
-    plt.ylabel("Mean Squared Error")
-    plt.title("Regression Training Loss")
-
-    plt.tight_layout()
-
-    plt.savefig(
-        output_path,
-        dpi=150,
-    )
-
-    plt.close()
+    return mae, rmse, r2
 
 
 def run_regression(
@@ -170,151 +130,93 @@ def run_regression(
     y,
     output_dir,
     random_seed=3513,
+    models_dir="models",
 ):
-    """
-    Complete regression pipeline.
-    """
-
     output_dir = Path(output_dir)
+    models_dir = Path(models_dir)
+
     output_dir.mkdir(
         parents=True,
         exist_ok=True,
     )
 
-    # ---------------------------------------------------------
-    # 1. Train/test split
-    # ---------------------------------------------------------
+    models_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
+    # Train/test split
     (
         X_train,
         X_test,
         y_train,
         y_test,
-    ) = train_test_split_numpy(
+    ) = train_test_split_manual(
         X,
         y,
         test_size=0.2,
         random_seed=random_seed,
     )
 
-    # ---------------------------------------------------------
-    # 2. Fit scaler ONLY on training data
-    # ---------------------------------------------------------
+    # Scale using training data only
+    scaler = StandardScalerManual()
 
-    train_mean, train_std = fit_standard_scaler(
+    X_train_scaled = scaler.fit_transform(
         X_train
     )
 
-    X_train_scaled = transform_standard_scaler(
-        X_train,
-        train_mean,
-        train_std,
+    X_test_scaled = scaler.transform(
+        X_test
     )
 
-    X_test_scaled = transform_standard_scaler(
-        X_test,
-        train_mean,
-        train_std,
-    )
-
-    # ---------------------------------------------------------
-    # 3. Add bias/intercept column
-    # ---------------------------------------------------------
-
-    X_train_with_bias = add_bias_column(
+    # Add bias
+    X_train_bias = add_bias(
         X_train_scaled
     )
 
-    X_test_with_bias = add_bias_column(
+    X_test_bias = add_bias(
         X_test_scaled
     )
 
-    # ---------------------------------------------------------
-    # 4. Train using batch gradient descent
-    # ---------------------------------------------------------
-
-    weights, loss_history = batch_gradient_descent(
-        X_train_with_bias,
+    # Train
+    weights, loss_history = train_gradient_descent(
+        X_train_bias,
         y_train,
-        learning_rate=0.01,
-        epochs=5000,
     )
 
-    # ---------------------------------------------------------
-    # 5. Generate predictions
-    # ---------------------------------------------------------
+    # Predictions
+    y_pred = X_test_bias @ weights
 
-    train_predictions = compute_predictions(
-        X_train_with_bias,
-        weights,
-    )
-
-    test_predictions = compute_predictions(
-        X_test_with_bias,
-        weights,
-    )
-
-    # ---------------------------------------------------------
-    # 6. Calculate metrics
-    # ---------------------------------------------------------
-
-    train_mae = calculate_mae(
-        y_train,
-        train_predictions,
-    )
-
-    test_mae = calculate_mae(
+    # Metrics
+    mae, rmse, r2 = calculate_metrics(
         y_test,
-        test_predictions,
+        y_pred,
     )
 
-    train_rmse = calculate_rmse(
-        y_train,
-        train_predictions,
-    )
-
-    test_rmse = calculate_rmse(
-        y_test,
-        test_predictions,
-    )
-
-    train_r2 = calculate_r2(
-        y_train,
-        train_predictions,
-    )
-
-    test_r2 = calculate_r2(
-        y_test,
-        test_predictions,
-    )
+    print("\nRegression completed.")
+    print(f"Training rows: {len(X_train)}")
+    print(f"Testing rows: {len(X_test)}")
+    print(f"Test MAE: {mae:.4f}")
+    print(f"Test RMSE: {rmse:.4f}")
+    print(f"Test R²: {r2:.4f}")
 
     # ---------------------------------------------------------
-    # 7. Save metrics
+    # Save metrics
     # ---------------------------------------------------------
 
     metrics = {
-        "model": "Linear Regression",
-        "method": "Batch Gradient Descent",
+        "model": "Linear Regression with Batch Gradient Descent",
         "random_seed": random_seed,
-        "test_size": 0.2,
         "training_rows": int(len(X_train)),
         "testing_rows": int(len(X_test)),
-        "learning_rate": 0.01,
-        "epochs": 5000,
-        "train": {
-            "mae": train_mae,
-            "rmse": train_rmse,
-            "r2": train_r2,
-        },
-        "test": {
-            "mae": test_mae,
-            "rmse": test_rmse,
-            "r2": test_r2,
-        },
+        "mae": float(mae),
+        "rmse": float(rmse),
+        "r2": float(r2),
     }
 
     metrics_path = (
-        output_dir / "regression_metrics.json"
+        output_dir
+        / "regression_metrics.json"
     )
 
     with open(
@@ -322,7 +224,6 @@ def run_regression(
         "w",
         encoding="utf-8",
     ) as file:
-
         json.dump(
             metrics,
             file,
@@ -330,37 +231,85 @@ def run_regression(
         )
 
     # ---------------------------------------------------------
-    # 8. Save loss graph
+    # Save loss plot
     # ---------------------------------------------------------
 
+    plt.figure(
+        figsize=(8, 5)
+    )
+
+    plt.plot(
+        loss_history
+    )
+
+    plt.title(
+        "Regression Training Loss"
+    )
+
+    plt.xlabel(
+        "Epoch"
+    )
+
+    plt.ylabel(
+        "Mean Squared Error"
+    )
+
+    plt.grid(
+        True,
+        alpha=0.25,
+    )
+
+    plt.tight_layout()
+
     loss_path = (
-        output_dir / "regression_loss.png"
+        output_dir
+        / "regression_loss.png"
     )
 
-    save_loss_plot(
-        loss_history,
+    plt.savefig(
         loss_path,
+        dpi=150,
     )
 
-    print("\nRegression completed.")
-    print(f"Training rows: {len(X_train)}")
-    print(f"Testing rows: {len(X_test)}")
-    print(f"Test MAE: {test_mae:.4f}")
-    print(f"Test RMSE: {test_rmse:.4f}")
-    print(f"Test R²: {test_r2:.4f}")
+    plt.close()
+
+    # ---------------------------------------------------------
+    # Save regression model
+    # ---------------------------------------------------------
+
+    regression_model = {
+        "weights": weights.tolist(),
+        "scaler_mean": scaler.mean_.tolist(),
+        "scaler_scale": scaler.scale_.tolist(),
+        "feature_count": int(X.shape[1]),
+        "model_version": "1.0",
+    }
+
+    regression_model_path = (
+        models_dir
+        / "regression_model.json"
+    )
+
+    with open(
+        regression_model_path,
+        "w",
+        encoding="utf-8",
+    ) as file:
+        json.dump(
+            regression_model,
+            file,
+            indent=4,
+        )
+
     print(
         f"Metrics saved to: {metrics_path}"
     )
+
     print(
         f"Loss plot saved to: {loss_path}"
     )
 
-    return {
-        "weights": weights,
-        "train_mean": train_mean,
-        "train_std": train_std,
-        "loss_history": loss_history,
-        "test_predictions": test_predictions,
-        "test_actual": y_test,
-        "metrics": metrics,
-    }
+    print(
+        f"Regression model saved to: "
+        f"{regression_model_path}"
+    )

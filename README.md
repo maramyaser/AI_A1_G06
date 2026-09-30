@@ -101,3 +101,6 @@ Muram Yaser 25/28164 - 3&4 classification enginnering, Clustering and QAengineer
 
 
 github repo: https://github.com/maramyaser/AI_A1_G06.git
+Final Commit Hash:Finalize AI Assignment 1 submission
+Dataset SHA-256: PASTE_DATASET_SHA256_HERE
+Python Version Tested: Python 3.13.7

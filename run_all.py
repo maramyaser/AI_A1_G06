@@ -2,6 +2,7 @@ import argparse
 
 from src.data_pipeline import run_data_pipeline
 from src.regression import run_regression
+from src.classification import run_classification
 
 
 def main():
@@ -23,7 +24,7 @@ def main():
     parser.add_argument(
         "--group",
         required=True,
-        help="Group code, for example AI_A1_G06"
+        help="Group code"
     )
 
     args = parser.parse_args()
@@ -54,7 +55,21 @@ def main():
         random_seed=3513,
     )
 
-    print("\nStage 1 and Stage 2 completed successfully.")
+    # =========================================================
+    # STAGE 3 — CLASSIFICATION
+    # =========================================================
+
+    run_classification(
+        X=X,
+        y=y_classification,
+        output_dir=args.output,
+        random_seed=3513,
+    )
+
+    print(
+        "\nStage 1, Stage 2, and Stage 3 "
+        "completed successfully."
+    )
 
 
 if __name__ == "__main__":

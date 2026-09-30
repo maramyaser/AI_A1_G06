@@ -91,3 +91,13 @@ AI_A1_G06/
 ├── predict.py
 ├── requirements.txt
 └── README.md
+
+
+members:
+                     - Data and UX lead
+                     - Regression engineer
+Muram Yaser 25/28164 - 3&4 classification enginnering, Clustering and QAengineer
+                     -  5 Reproducibility and release lead
+
+
+github repo: https://github.com/maramyaser/AI_A1_G06.git

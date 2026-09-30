@@ -94,13 +94,13 @@ AI_A1_G06/
 
 
 members:
-                     - Data and UX lead
-                     - Regression engineer
+Umutoniwase Alice    - Data and UX lead
+Ishimwe Alphaxad     - Regression engineer
 Muram Yaser 25/28164 - 3&4 classification enginnering, Clustering and QAengineer
-                     -  5 Reproducibility and release lead
+Nsabimana Irene      - 5 Reproducibility and release lead
 
 
 github repo: https://github.com/maramyaser/AI_A1_G06.git
-Final Commit Hash:Finalize AI Assignment 1 submission
+Final Commit Hash:e011d244db231d7b1f162e7aadcf66f5b72adf70484129e75bbd17854587b099
 Dataset SHA-256: PASTE_DATASET_SHA256_HERE
 Python Version Tested: Python 3.13.7

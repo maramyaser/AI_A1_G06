@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @"
 # AI Assignment 1 - AI_A1_G06
 
@@ -91,3 +92,6 @@ AI_A1_G06/
 ├── predict.py
 ├── requirements.txt
 └── README.md
+=======
+# AI_A1_G06
+>>>>>>> ef7241a190df0e170a98c875e6cf59ced3bf730e

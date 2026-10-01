@@ -184,6 +184,11 @@ Uwimbabazi Aimerance - clustration enginnering
 
 
 github repo: https://github.com/maramyaser/AI_A1_G06.git
-Final Commit Hash:
+Final Commit Hash
+
+The final submission commit hash is recorded after the README is finalized.
+
+FINAL_COMMIT_HASH
+Final Commit Hash:30b95ae2192a9021343ab59e6dfe63a02962e151
 Dataset SHA-256: e011d244db231d7b1f162e7aadcf66f5b72adf70484129e75bbd17854587b099
 Python Version Tested: Python 3.13.7
